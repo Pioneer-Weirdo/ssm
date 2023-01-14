@@ -8,6 +8,8 @@
 
 > 相关视频请移步到bilibili[尚硅谷](https://www.bilibili.com/video/BV1Ya411S7aT/)
 
+> [mybatis官方中文文档](https://mybatis.org/mybatis-3/zh/index.html)
+
 > 文章及相关代码正在更新中🎠
 
 ## 依赖

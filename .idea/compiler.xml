@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="MyBatis" />
+        <module name="MyBatis_mbg" />
         <module name="MyBatis_resultMap" />
         <module name="MyBatis_dynamicSQL" />
         <module name="MyBatis_cache" />

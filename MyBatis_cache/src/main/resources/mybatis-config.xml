@@ -9,6 +9,10 @@
             在MyBatis的范围中，就可以使用别名表示一个具体的类性
             不设置alias，默认的别名类名不区分大小写
      -->
+    <settings>
+<!--        开启驼峰命名自动映射-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
     <typeAliases>
 <!--        <typeAlias type="com.zzuli.entity.user" alias="User"/>-->
         <!--通过包设置类性别名，指定包下的所有类性将全部拥有默认的别名-->

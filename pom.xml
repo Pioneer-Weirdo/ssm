@@ -16,6 +16,7 @@
     <module>MyBatis</module>
       <module>MyBatis_dynamicSQL</module>
       <module>MyBatis_cache</module>
+      <module>MyBatis_mbg</module>
   </modules>
 
   <properties>
