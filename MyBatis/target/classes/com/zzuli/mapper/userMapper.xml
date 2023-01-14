@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzuli.mapper.userMapper">
+   <insert id="insetUser">
+       insert into t_user values(null,'admin','123456',21,'男','12323@gmail.com')
+   </insert>
+    <update id="updateUser">
+        update t_user set username='root',password='123' where id=3
+    </update>
+    <delete id="deleteUser">
+        delete from t_user where id=3
+    </delete>
+    <!--
+        resultType:设置结果类型，查询接过的java类型
+        resultMap：自定义映射，处理多对一、一对多的关系映射
+    -->
+    <select id="getUserById" resultType="com.zzuli.entity.User">
+        select * from t_user where id=4
+    </select>
+    <select id="getAllUser" resultType="User">
+            select  * from t_user
+    </select>
+    <!-- MyBatis获取参数值的两种方式：${} #{}
+    ${}:使用字符串拼接sql
+    #{}:使用占位符方式拼接sql
+    -->
+    <select id="getUsername" resultType="User">
+       select * from t_user where username=#{username}
+        <!--select * from t_user where username='${username}'-->
+    </select>
+    <select id="checkLogin" resultType="User">
+<!--[arg1, arg0, param1, param2]-->
+        select * from t_user where username=#{param1} and password=#{param2}
+        <!--select * from t_user where username='${username}'-->
+    </select>
+    <select id="checkLoginByMap" resultType="User">
+        select * from t_user where username=#{username} and password=#{password}
+        <!--select * from t_user where username='${username}'-->
+    </select>
+    <select id="checkLoginByParam" resultType="User">
+        select * from t_user where username=#{username} and password=#{password}
+        <!--select * from t_user where username='${username}'-->
+    </select>
+    <insert id="insertUser">
+        insert into t_user values (null,#{username},#{password},#{age},#{gender},#{email})
+    </insert>
+    <select id="getCount" resultType="int">
+        select count(*) from t_user
+    </select>
+    <select id="getUserByIdToMap" resultType="map">
+        select * from t_user where id=${id}
+    </select>
+    <select id="getAllUserToMap" resultType="map">
+        select  cast(id as char ) as id ,username,password,age,gender,email from t_user;
+    </select>
+</mapper>

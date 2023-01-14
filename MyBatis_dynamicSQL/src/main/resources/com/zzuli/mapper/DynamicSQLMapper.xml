@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzuli.mapper.DynamicSQLMapper">
+<!--    empId; empName; age; gender;-->
+    <select id="getEmpByConditionOne" resultType="Emp">
+        select * from t_emp where true
+        <if test="empName!=null and empName!=''">
+            and emp_Name=#{empName}
+        </if>
+        <if test="age!=null and age!=''">
+           and age=#{age}
+        </if>
+        <if test="gender!=null and gender!=''">
+           and gender=#{gender}
+        </if>
+    </select>
+
+    <select id="getEmpByConditionTwo" resultType="Emp">
+        select * from t_emp
+<!--        ①：where 内有条件成立会在sql中添加where关键词
+            ②：自动截取多余的and
+-->
+        <where>
+            <if test="empName!=null and empName!=''">
+                and emp_Name=#{empName}
+            </if>
+            <if test="age!=null and age!=''">
+                and age=#{age}
+            </if>
+            <if test="gender!=null and gender!=''">
+                and gender=#{gender}
+            </if>
+        </where>
+    </select>
+    <sql id="empColumns">
+        emp_id,emp_name,age,gender,dept_id
+    </sql>
+    <select id="getEmpByCondition" resultType="Emp">
+        select <include refid="empColumns"></include>from t_emp
+        <!--       prefix:在前面添加内容
+                   prefixOverrides: 截取前面的内容
+                   suffix:在后面添加内容
+                   suffixOverrides: 截取后面的内容
+        -->
+        <trim prefix="where" prefixOverrides="and">
+            <if test="empName!=null and empName!=''">
+                and emp_Name=#{empName}
+            </if>
+            <if test="age!=null and age!=''">
+                and age=#{age}
+            </if>
+            <if test="gender!=null and gender!=''">
+                and gender=#{gender}
+            </if>
+        </trim>
+    </select>
+    <select id="getEmpByChoose" resultType="Emp">
+        select * from t_emp
+        <where>
+            <choose>
+                <when test="empName!=null and empName!=''">
+                     emp_Name=#{empName}
+                </when>
+                <when test="age!=null and age!=''">
+                    age=#{age}
+                </when>
+                <when test="gender!=null and gender!=''">
+                    gender=#{gender}
+                </when>
+            </choose>
+        </where>
+    </select>
+    <insert id="insertMoreEmp">
+        insert into t_emp values
+         <!--collection:传过来的参数，默认为list
+            item:遍历赋值给emp
+            separator:分隔符
+         -->
+        <foreach collection="emps" item="emp" separator=",">
+            (null,#{emp.empName},#{emp.age},#{emp.gender},null)
+        </foreach>
+    </insert>
+<!--    int deleteMoreEmp(@Param("empIds") Integer[] empIds);-->
+<!--    <delete id="deleteMoreEmp">-->
+<!--        delete from t_emp where emp_id in(-->
+<!--        <foreach collection="empIds" item="empId" separator=",">-->
+<!--            #{empId}-->
+<!--        </foreach>-->
+<!--        )-->
+<!--    </delete>-->
+
+<!--    <delete id="deleteMoreEmp">-->
+<!--        delete from t_emp where emp_id in-->
+<!--            <foreach collection="empIds" item="empId" separator="," open="(" close=")">-->
+<!--                #{empId}-->
+<!--            </foreach>-->
+<!--    </delete>-->
+
+
+    <delete id="deleteMoreEmp">
+        delete from t_emp where
+        <foreach collection="empIds" item="empId" separator="or">
+            emp_id=#{empId}
+        </foreach>
+    </delete>
+
+</mapper>	

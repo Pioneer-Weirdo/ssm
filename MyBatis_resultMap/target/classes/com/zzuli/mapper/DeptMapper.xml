@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzuli.mapper.DeptMapper">
+    <select id="getEmpAndDeptByEmpStepTwo" resultType="Dept">
+        select dept_id,dept_name from t_dept where dept_id=#{deptId}
+    </select>
+    <resultMap id="DeptAndEmpResultMap" type="Dept">
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <!--
+            collection处理一对多的映射关系（处理集合属性）
+            使用ofType设置集合的对用对象
+        -->
+        <collection property="empList" ofType="Emp">
+            <id column="emp_id" property="empId"/>
+            <result column="emp_name" property="empName"/>
+            <result column="age" property="age"/>
+            <result column="gender" property="gender"/>
+<!--            就算你配置了注释的也不会陷入循环-->
+<!--            <result column="dept_id" property="dept.deptId"/>-->
+<!--            <result column="dept_name" property="dept.deptName"/>-->
+
+        </collection>
+    </resultMap>
+<!--    Dept getDeptAndEmpById(@Param("deptId")Integer deptId);-->
+    <select id="getDeptAndEmpById" resultMap="DeptAndEmpResultMap">
+        select * from t_dept
+        left join t_emp te
+        on t_dept.dept_id = te.dept_id
+        where te.dept_id=#{deptId}
+    </select>
+    <resultMap id="DeptAndEmpByStepResultMap" type="Dept" >
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
+        <association property="empList"
+                     select="com.zzuli.mapper.EmpMapper.getDeptAndEmpByStepTwo"
+                     column="dept_id"/>
+    </resultMap>
+    <select id="getDeptAndEmpByStepOne" resultMap="DeptAndEmpByStepResultMap">
+            select * from t_dept where dept_id=#{deptId}
+    </select>
+
+</mapper>	

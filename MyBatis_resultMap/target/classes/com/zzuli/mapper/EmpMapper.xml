@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzuli.mapper.EmpMapper">
+    <!--出现字段名不匹配的时候解决方法（处理映射关系）：
+            1、通过起别名的方式映射
+select emp_id empId,emp_name empName,age,gender,dept_id deptId from t_emp where emp_id=#{empId}
+             2、当字段符合下划线_,而属性符合java的要求使用驼峰
+             此时可以在MyBatis的核心配置文件中设置全局配置，可以将下划线自动映射为驼峰
+             3、自定义映射使用resultMap设置
+    -->
+<!--    <select id="getEmpByEmpId" resultType="Emp">-->
+<!--        select * from t_emp where emp_id=#{empId}-->
+<!--    </select>-->
+    <!--
+            resultMap:设置自定义映射关系
+                id:唯一标识
+                type:处理映射关系的实体类类型
+             id: 处理主键
+             result: 处理普通字段的映射关系
+                column:设置查询出的某个字段的字段名
+                property: 设置映射关系的实体类的属性名
+    -->
+    <resultMap id="empResultMap" type="Emp">
+        <id column="emp_id" property="empId"/>
+        <result column="emp_name" property="empName"/>
+        <result column="age" property="age"/>
+        <result column="gender" property="gender"/>
+<!--        <result column="dept_id" property="deptId"/>-->
+    </resultMap>
+    <select id="getEmpByEmpId" resultMap="empResultMap">
+        select * from t_emp where emp_id=#{empId}
+    </select>
+    <!--
+            多对一的查询结果无法正常映射的解决方法：
+                1、级联的方式处理
+                2、使用association配置
+                3、分步查询
+    -->
+<!--    <resultMap id="EmpAndDeptResultMap" type="Emp">-->
+<!--        <id column="emp_id" property="empId"/>-->
+<!--        <result column="emp_name" property="empName"/>-->
+<!--        <result column="age" property="age"/>-->
+<!--        <result column="gender" property="gender"/>-->
+<!--        <result column="dept_id" property="dept.deptId"/>-->
+<!--        <result column="dept_name" property="dept.deptName"/>-->
+<!--    </resultMap>-->
+<!--    <select id="getEmpAndDeptByEmpId" resultMap="EmpAndDeptResultMap">-->
+<!--        select-->
+<!--            *-->
+<!--        from t_emp-->
+<!--        left join t_dept td-->
+<!--        on td.dept_id = t_emp.dept_id-->
+<!--        where emp_id=#{empId}-->
+<!--    </select>-->
+
+<!--    <resultMap id="EmpAndDeptResultMap" type="Emp">-->
+<!--        <id column="emp_id" property="empId"/>-->
+<!--        <result column="emp_name" property="empName"/>-->
+<!--        <result column="age" property="age"/>-->
+<!--        <result column="gender" property="gender"/>-->
+<!--        <association property="dept" javaType="Dept">-->
+<!--            <id column="dept_id" property="deptId"/>-->
+<!--            <result column="dept_name" property="deptName"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+<!--    <select id="getEmpAndDeptByEmpId" resultMap="EmpAndDeptResultMap">-->
+<!--        select-->
+<!--            *-->
+<!--        from t_emp-->
+<!--        left join t_dept td-->
+<!--        on td.dept_id = t_emp.dept_id-->
+<!--        where emp_id=#{empId}-->
+<!--    </select>-->
+
+    <!-- association:
+            property:设置需要映射关系的属性名
+            select: 设置分步查询的sql唯一标识
+            column: 将查询的某个字段作为分步查询的sql的条件
+            fetchType:在开启了延迟加载的环境中，通过该属性设置当前分布查询是否使用延迟加载
+                “eager（立即加载）/lazy（延迟加载）”
+
+    -->
+    <resultMap id="EmpAndDeptResultMap" type="Emp">
+        <id column="emp_id" property="empId"/>
+        <result column="emp_name" property="empName"/>
+        <result column="age" property="age"/>
+        <result column="gender" property="gender"/>
+        <association property="dept"
+                     select="com.zzuli.mapper.DeptMapper.getEmpAndDeptByEmpStepTwo"
+                     column="dept_id"
+                     fetchType="eager"/>
+
+    </resultMap>
+    <select id="getEmpAndDeptByEmpStepOne" resultMap="EmpAndDeptResultMap">
+        select * from t_emp where emp_id=#{empId}
+    </select>
+
+    <select id="getDeptAndEmpByStepTwo" resultType="Emp">
+        select * from t_emp where dept_id=#{deptId}
+    </select>
+
+</mapper>	
