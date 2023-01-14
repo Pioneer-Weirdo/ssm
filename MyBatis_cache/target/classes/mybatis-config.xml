@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--引入配置文件-->
+    <properties resource="jdbc.properties"/>
+    <!-- typeAliases:设置类性别名
+            在MyBatis的范围中，就可以使用别名表示一个具体的类性
+            不设置alias，默认的别名类名不区分大小写
+     -->
+    <settings>
+<!--        开启驼峰命名自动映射-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <typeAliases>
+<!--        <typeAlias type="com.zzuli.entity.user" alias="User"/>-->
+        <!--通过包设置类性别名，指定包下的所有类性将全部拥有默认的别名-->
+        <package name="com.zzuli.entity"/>
+    </typeAliases>
+    <!--配置连接数据库的环境-->
+    <!--environments的default属性用于配置默认环境id-->
+    <environments default="development">
+        <!--environment的id属性唯一标识，设置一个具体的数据库连接环境-->
+        <environment id="development">
+            <!--transactionManager：设置事务管理器
+                属性：
+                    type:设置事务管理方式 “JDBC/MANAGED”
+                   JDBC:JDBC原生的事务管理方式
+                   MANAGED:被管理，例如spring-->
+            <transactionManager type="JDBC"/>
+            <!--dataSource: 设置数据源
+             属性:
+                type:设置数据源的类性"POOLED/UNPOOLED/JNDI "
+                POOLED:表示使用数据库连接池
+                UNPOOLED:不使用数据库连接池
+                JNDI:使用上下文的数据源
+                -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--引入mybatis映射文件-->
+    <mappers>
+<!--        <mapper resource="mappers/userMapper.xml"/>-->
+        <!--
+            以包的方式引入映射文件，但是必须满足两个条件
+            1.mapper接口和映射文件所在的包必须一致
+            2.mapper接口的名字和映射文件的名字必须一致
+        -->
+        <package name="com/zzuli/mapper"/>
+    </mappers>
+</configuration>
