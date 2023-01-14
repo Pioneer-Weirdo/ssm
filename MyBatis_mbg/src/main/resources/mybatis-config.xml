@@ -8,6 +8,10 @@
         <!--"com.zzuli.entity"-->
         <package name="com.zzuli.entity"/>
     </typeAliases>
+    <plugins>
+<!--        配置分页插件-->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+    </plugins>
 
     <environments default="development">
         <environment id="development">
